@@ -22,7 +22,7 @@
     class="bg-gray-100 min-h-screen flex items-center justify-center p-4"
     data-theme="caramellatte"
   >
-    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="container mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div>
         <div class="card w-full bg-base-100 shadow-xl">
           <div class="card-body">
@@ -43,6 +43,133 @@
             </div>
 
             <div id="pokemon-list" class="space-y-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div
+          id="pokemon-iv-calculator"
+          class="card w-full bg-base-100 shadow-xl"
+        >
+          <div class="card-body">
+            <h2 class="card-title text-2xl font-bold mb-4 text-center">
+              Calcola IV del Pokémon
+            </h2>
+            <form id="iv-form" class="space-y-4">
+              <div class="form-control">
+                <label for="pokemon-name" class="label">
+                  <span class="label-text">Nome Pokémon:</span>
+                </label>
+                <input
+                  type="text"
+                  id="pokemon-name"
+                  name="pokemon-name"
+                  class="input input-bordered w-full"
+                  required
+                />
+              </div>
+
+              <div class="form-control">
+                <label for="pokemon-level" class="label">
+                  <span class="label-text">Livello:</span>
+                </label>
+                <input
+                  type="number"
+                  id="pokemon-level"
+                  name="pokemon-level"
+                  class="input input-bordered w-full"
+                  min="1"
+                  max="100"
+                  required
+                />
+              </div>
+
+              <div class="form-control">
+                <label for="pokemon-nature" class="label">
+                  <span class="label-text">Natura:</span>
+                </label>
+                <select
+                  id="pokemon-nature"
+                  name="pokemon-nature"
+                  class="select select-bordered w-full"
+                >
+                  <option value="Hardy">Hardy</option>
+                  <option value="Lonely">Lonely</option>
+                  <option value="Brave">Brave</option>
+                  <option value="Adamant">Adamant</option>
+                  <option value="Naughty">Naughty</option>
+                  <option value="Bold">Bold</option>
+                  <option value="Docile">Docile</option>
+                  <option value="Relaxed">Relaxed</option>
+                  <option value="Impish">Impish</option>
+                  <option value="Lax">Lax</option>
+                  <option value="Timid">Timid</option>
+                  <option value="Hasty">Hasty</option>
+                  <option value="Serious">Serious</option>
+                  <option value="Jolly">Jolly</option>
+                  <option value="Naive">Naive</option>
+                  <option value="Modest">Modest</option>
+                  <option value="Mild">Mild</option>
+                  <option value="Quiet">Quiet</option>
+                  <option value="Bashful">Bashful</option>
+                  <option value="Rash">Rash</option>
+                  <option value="Calm">Calm</option>
+                  <option value="Gentle">Gentle</option>
+                  <option value="Sassy">Sassy</option>
+                  <option value="Careful">Careful</option>
+                  <option value="Quirky">Quirky</option>
+                </select>
+              </div>
+
+              <div class="form-control">
+                <label for="pokemon-stats" class="label">
+                  <span class="label-text"
+                    >Statistiche (HP, Att, Dif, SpA, SpD, Vel):</span
+                  >
+                </label>
+                <input
+                  type="text"
+                  id="pokemon-stats"
+                  name="pokemon-stats"
+                  class="input input-bordered w-full"
+                  placeholder="es. 31, 45, 50, 40, 35, 60"
+                  required
+                />
+              </div>
+
+              <div class="form-control">
+                <label for="pokemon-generation" class="label">
+                  <span class="label-text">Generazione:</span>
+                </label>
+                <select
+                  id="pokemon-generation"
+                  name="pokemon-generation"
+                  class="select select-bordered w-full"
+                >
+                  <option value="3">Generazione 3</option>
+                  <option value="4">Generazione 4</option>
+                  <option value="5">Generazione 5</option>
+                  <option value="6">Generazione 6</option>
+                  <option value="7">Generazione 7</option>
+                  <option value="8">Generazione 8</option>
+                  <option value="9">Generazione 9</option>
+                </select>
+              </div>
+
+              <div class="form-control">
+                <button type="submit" class="btn btn-primary w-full">
+                  Calcola IV
+                </button>
+              </div>
+            </form>
+
+            <div
+              id="iv-results"
+              class="mt-4 p-4 bg-gray-100 rounded-lg shadow-inner"
+            >
+              <!-- Risultati IV verranno mostrati qui -->
+            </div>
           </div>
         </div>
       </div>
