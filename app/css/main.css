@@ -1,0 +1,14 @@
+body {
+  font-family: sans-serif;
+}
+/* Stile per le immagini degli sprite per garantirne la dimensione */
+.pokemon-sprite {
+  width: 96px; /* Dimensione standard sprite Pokémon */
+  height: 96px;
+  image-rendering: pixelated; /* Per sprite in stile retrò */
+}
+/* Stile per l'immagine nell'area espansa */
+.pokemon-artwork {
+  max-width: 150px; /* Dimensione massima per l'artwork ufficiale */
+  height: auto;
+}

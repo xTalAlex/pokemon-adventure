@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pokémon Adventure</title>
+
+    <link rel="stylesheet" href="./css/main.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body
+    class="bg-gray-100 min-h-screen flex items-center justify-center p-4"
+    data-theme="caramellatte"
+  >
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <div class="card w-full bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title text-2xl font-bold mb-4 text-center">
+              La Tua Squadra Pokémon
+            </h2>
+
+            <div class="flex gap-2 mb-4">
+              <input
+                type="text"
+                id="pokemon-name-input"
+                placeholder="Nome Pokémon"
+                class="input input-bordered w-full"
+              />
+              <button id="add-pokemon-btn" class="btn btn-primary">
+                Aggiungi
+              </button>
+            </div>
+
+            <div id="pokemon-list" class="space-y-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card w-full bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title text-2xl font-bold mb-4 text-center">
+              Nature dei Pokémon
+            </h2>
+
+            <div>
+              <p class="mb-4 text-gray-700 text-center">
+                Seleziona le nature di tuo interesse:
+              </p>
+            </div>
+            <div>
+              <div class="form-control">
+                <ul class="space-y-2" id="natures-list">
+                  <li class="flex items-center justify-between">
+                    <label for="lonely" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Schiva (Lonely) - (<span class="text-success"
+                          >+Attacco</span
+                        >, <span class="text-error">-Difesa</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="lonely"
+                      name="nature"
+                      value="lonely"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="brave" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Audace (Brave) - (<span class="text-success"
+                          >+Attacco</span
+                        >, <span class="text-error">-Velocità</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="brave"
+                      name="nature"
+                      value="brave"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="adamant" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Decisa (Adamant) - (<span class="text-success"
+                          >+Attacco</span
+                        >,
+                        <span class="text-error">-Attacco Speciale</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="adamant"
+                      name="nature"
+                      value="adamant"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="naughty" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Birbona (Naughty) - (<span class="text-success"
+                          >+Attacco</span
+                        >,
+                        <span class="text-error">-Difesa Speciale</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="naughty"
+                      name="nature"
+                      value="naughty"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="bold" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Sicura (Bold) - (<span class="text-success"
+                          >+Difesa</span
+                        >, <span class="text-error">-Attacco</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="bold"
+                      name="nature"
+                      value="bold"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="relaxed" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Placida (Relaxed) - (<span class="text-success"
+                          >+Difesa</span
+                        >, <span class="text-error">-Velocità</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="relaxed"
+                      name="nature"
+                      value="relaxed"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="impish" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Scaltra (Impish) - (<span class="text-success"
+                          >+Difesa</span
+                        >,
+                        <span class="text-error">-Attacco Speciale</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="impish"
+                      name="nature"
+                      value="impish"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="timid" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Timida (Timid) - (<span class="text-success"
+                          >+Velocità</span
+                        >, <span class="text-error">-Attacco</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="timid"
+                      name="nature"
+                      value="timid"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="hasty" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Lesta (Hasty) - (<span class="text-success"
+                          >+Velocità</span
+                        >, <span class="text-error">-Difesa</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="hasty"
+                      name="nature"
+                      value="hasty"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="jolly" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Allegra (Jolly) - (<span class="text-success"
+                          >+Velocità</span
+                        >,
+                        <span class="text-error">-Attacco Speciale</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="jolly"
+                      name="nature"
+                      value="jolly"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="naive" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Ingenua (Naive) - (<span class="text-success"
+                          >+Velocità</span
+                        >,
+                        <span class="text-error">-Difesa Speciale</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="naive"
+                      name="nature"
+                      value="naive"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="modest" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Modesta (Modest) - (<span class="text-success"
+                          >+Attacco Speciale</span
+                        >, <span class="text-error">-Attacco</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="modest"
+                      name="nature"
+                      value="modest"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="mild" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Mite (Mild) - (<span class="text-success"
+                          >+Attacco Speciale</span
+                        >, <span class="text-error">-Difesa</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="mild"
+                      name="nature"
+                      value="mild"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="quiet" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Quieta (Quiet) - (<span class="text-success"
+                          >+Attacco Speciale</span
+                        >, <span class="text-error">-Velocità</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="quiet"
+                      name="nature"
+                      value="quiet"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="rash" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Ardente (Rash) - (<span class="text-success"
+                          >+Attacco Speciale</span
+                        >,
+                        <span class="text-error">-Difesa Speciale</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="rash"
+                      name="nature"
+                      value="rash"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="calm" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Calma (Calm) - (<span class="text-success"
+                          >+Difesa Speciale</span
+                        >, <span class="text-error">-Attacco</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="calm"
+                      name="nature"
+                      value="calm"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="sassy" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Vivace (Sassy) - (<span class="text-success"
+                          >+Difesa Speciale</span
+                        >, <span class="text-error">-Velocità</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="sassy"
+                      name="nature"
+                      value="sassy"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <label for="careful" class="label cursor-pointer">
+                      <span class="label-text mr-2"
+                        >Cauta (Careful) - (<span class="text-success"
+                          >+Difesa Speciale</span
+                        >,
+                        <span class="text-error">-Attacco Speciale</span>)</span
+                      >
+                    </label>
+                    <input
+                      type="checkbox"
+                      id="careful"
+                      name="nature"
+                      value="careful"
+                      class="checkbox checkbox-primary"
+                    />
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/natures.js"></script>
+    <script src="./js/pokemonList.js"></script>
+  </body>
+</html>
