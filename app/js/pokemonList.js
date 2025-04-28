@@ -65,6 +65,7 @@ async function getPokemonData(name) {
       id: data.id,
       front_sprite: data.sprites.front_default,
       back_sprite: data.sprites.back_default,
+      shiny_sprite: data.sprites.front_shiny,
       official_artwork:
         data.sprites.other && data.sprites.other["official-artwork"]
           ? data.sprites.other["official-artwork"].front_default
@@ -191,15 +192,22 @@ function addPokemonToList(pokemonData) {
   <button class="btn btn-sm btn-error remove-pokemon-btn" onclick="handleRemovePokemon(event)">Rimuovi</button>
 </div>
 <div class="collapse-content flex flex-col justify-center gap-4 p-4">
-  ${
-    expandedContentImage
-      ? `<img src="${expandedContentImage}" alt="${
-          pokemonData.name
-        } image" class="${
-          pokemonData.official_artwork ? "pokemon-artwork" : "pokemon-sprite"
-        }">`
-      : "<p>Immagine non disponibile.</p>"
-  }
+  <div class="flex items-center justify-center gap-4">
+    ${
+      expandedContentImage
+        ? `<img src="${expandedContentImage}" alt="${
+            pokemonData.name
+          } image" class="${
+            pokemonData.official_artwork ? "pokemon-artwork" : "pokemon-sprite"
+          }">`
+        : "<p>Immagine non disponibile.</p>"
+    }
+    ${
+      pokemonData.shiny_sprite
+        ? `<img src="${pokemonData.shiny_sprite}" alt="${pokemonData.name} shiny sprite" class="pokemon-sprite">`
+        : "<p>Shiny sprite non disponibile.</p>"
+    }
+  </div>
   <div class="types-container mt-4">
     <h3 class="text-lg font-semibold mb-2">Tipi</h3>
     <div class="flex flex-col gap-2">
