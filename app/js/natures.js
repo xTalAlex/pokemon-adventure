@@ -224,6 +224,10 @@ async function calculateIV(event) {
 
     const ivRangesArray = ivRanges.map((range) => [range.min, range.max]);
     const hiddenPowerPossibilitiesArray = calculateHiddenPower(ivRangesArray);
+    const sortedAndGroupedHiddenPowerPossibilities = sortAndGroupByType(
+      hiddenPowerPossibilitiesArray
+    );
+
     const uniqueCombinationsArray = new Map();
     hiddenPowerPossibilitiesArray.forEach((result) => {
       const key = `${result.type} - ${result.power}`;
@@ -233,18 +237,54 @@ async function calculateIV(event) {
       uniqueCombinationsArray.get(key).push(result.ivs);
     });
 
-    // uniqueCombinationsArray.forEach((ivsList, key) => {
-    //   console.log(`${key}:`);
-    //   ivsList.forEach((ivs) => {
-    //     console.log(
-    //       `  { HP: ${ivs.hp}, Atk: ${ivs.atk}, Def: ${ivs.def}, SpA: ${ivs.spa}, SpD: ${ivs.spd}, Spe: ${ivs.spe} }`
-    //     );
-    //   });
-    // });
+    Object.entries(sortedAndGroupedHiddenPowerPossibilities).forEach(
+      async ([type, group]) => {
+        const typeResponse = await fetch(
+          `https://pokeapi.co/api/v2/type/${type.toLowerCase()}/`
+        );
+        if (!typeResponse.ok)
+          throw new Error(`Impossibile ottenere i dati per il tipo ${type}.`);
+        const typeData = await typeResponse.json();
+        const typeIcon =
+          typeData.sprites["generation-iii"]["emerald"]["name_icon"] ?? "";
 
-    uniqueCombinationsArray.forEach((_, key) => {
-      console.log(key);
-    });
+        const sectionHTML = `
+            <tr>
+              <td colspan="3" class="type-header">
+                <img src="${typeIcon}" alt="${type}" class="type-icon" onerror="this.style.display='none';">
+              </td>
+            </tr>
+            `;
+
+        // Aggiungi la sezione alla tabella
+        document
+          .getElementById("hidden-power-table-body")
+          .insertAdjacentHTML("beforeend", sectionHTML);
+
+        // Aggiungi le righe per ogni combinazione di potenza
+        group.forEach((entry) => {
+          const ivsDescriptions = `{ HP: ${entry.ivs.hp}, Atk: ${entry.ivs.atk}, Def: ${entry.ivs.def}, SpA: ${entry.ivs.spa}, SpD: ${entry.ivs.spd}, Spe: ${entry.ivs.spe} }`;
+
+          const rowHTML = `
+        <tr>
+        <td class="sr-only">${type}</td>
+        <td>${entry.power}</td>
+        <td>${ivsDescriptions}</td>
+        </tr>
+      `;
+
+          document
+            .getElementById("hidden-power-table-body")
+            .insertAdjacentHTML("beforeend", rowHTML);
+        });
+      }
+    );
+
+    // Rendi visibile la sezione Hidden Power Results
+    const hiddenPowerResultsDiv = document.getElementById(
+      "hidden-power-results"
+    );
+    hiddenPowerResultsDiv.classList.remove("hidden");
   } catch (error) {
     console.error("Errore:", error);
     const resultsDiv = document.getElementById("iv-results");

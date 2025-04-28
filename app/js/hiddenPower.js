@@ -109,44 +109,25 @@ function calculateHiddenPower(ivRangesArray) {
   return results;
 }
 
-// // Example usage with your provided IV ranges in the new array format:
-// const myIvRangesArray = [
-//   [9, 10], // HP
-//   [18, 18], // Attack
-//   [21, 22], // Defense
-//   [19, 20], // Special Attack
-//   [24, 24], // Special Defense
-//   [6, 7], // Speed
-// ];
+/**
+ * Sorts the results of calculateHiddenPower by power in descending order
+ * and groups them by type.
+ *
+ * @param {Array<object>} hiddenPowerResults - The array of Hidden Power results.
+ * @returns {object} - An object where keys are types and values are arrays of results.
+ */
+function sortAndGroupByType(hiddenPowerResults) {
+  // Sort by power in descending order
+  hiddenPowerResults.sort((a, b) => b.power - a.power);
 
-// const hiddenPowerPossibilitiesArray =
-//   calculateHiddenPowerFromArray(myIvRangesArray);
+  // Group by type
+  const groupedByType = hiddenPowerResults.reduce((acc, result) => {
+    if (!acc[result.type]) {
+      acc[result.type] = [];
+    }
+    acc[result.type].push(result);
+    return acc;
+  }, {});
 
-// console.log("Possible Hidden Power combinations (using array input):");
-// hiddenPowerPossibilitiesArray.forEach((result) => {
-//   console.log(
-//     `IVs: HP ${result.ivs.hp}, Atk ${result.ivs.atk}, Def ${result.ivs.def}, SpA ${result.ivs.spa}, SpD ${result.ivs.spd}, Spe ${result.ivs.spe} -> Type: ${result.type}, Power: ${result.power}`
-//   );
-// });
-
-// // You can still process the results to get unique Type-Power combinations as before
-// const uniqueCombinationsArray = new Map();
-// hiddenPowerPossibilitiesArray.forEach((result) => {
-//   const key = `${result.type} - ${result.power}`;
-//   if (!uniqueCombinationsArray.has(key)) {
-//     uniqueCombinationsArray.set(key, []);
-//   }
-//   uniqueCombinationsArray.get(key).push(result.ivs);
-// });
-
-// console.log(
-//   "\nUnique Hidden Power Type - Power combinations and the IVs that produce them (using array input):"
-// );
-// uniqueCombinationsArray.forEach((ivsList, key) => {
-//   console.log(`${key}:`);
-//   ivsList.forEach((ivs) => {
-//     console.log(
-//       `  { HP: ${ivs.hp}, Atk: ${ivs.atk}, Def: ${ivs.def}, SpA: ${ivs.spa}, SpD: ${ivs.spd}, Spe: ${ivs.spe} }`
-//     );
-//   });
-// });
+  return groupedByType;
+}
