@@ -7,7 +7,6 @@ const addPokemonBtn = document.getElementById("add-pokemon-btn");
 // Funzione per salvare la lista Pokémon nel localStorage
 function savePokemonTeam(team) {
   localStorage.setItem(pokemonStorageKey, JSON.stringify(team));
-  console.log("Squadra Pokémon salvata.");
 }
 
 // Funzione per caricare la lista Pokémon dal localStorage
@@ -23,7 +22,6 @@ async function loadPokemonTeam() {
         !pokemonData.front_sprite ||
         !pokemonData.back_sprite
       ) {
-        console.log(`Aggiornamento dati per Pokémon: ${pokemonData.name}`);
         const updatedData = await getPokemonData(pokemonData.name);
         if (updatedData) {
           Object.assign(pokemonData, updatedData); // Aggiorna i dati mancanti
@@ -31,8 +29,6 @@ async function loadPokemonTeam() {
       }
       addPokemonToList(pokemonData); // Aggiunge ogni Pokémon (aggiornato o meno) alla UI
     }
-
-    console.log("Squadra Pokémon caricata.");
     return team;
   }
   console.log("Nessuna squadra Pokémon salvata trovata.");
@@ -82,6 +78,23 @@ async function getPokemonData(name) {
       abilities: data.abilities.map((ability) => ability.ability.name), // Ottieni le abilità
       types, // Aggiungi i tipi con le icone
       cry: `https://play.pokemonshowdown.com/audio/cries/${data.name.toLowerCase()}.ogg`, // URL del verso
+      levelUpMoves: data.moves
+        .filter((move) =>
+          move.version_group_details.some(
+            (detail) =>
+              detail.move_learn_method.name === "level-up" &&
+              detail.version_group.name === "emerald" // Cambia con la generazione desiderata
+          )
+        )
+        .map((move) => ({
+          name: move.move.name,
+          level: move.version_group_details.find(
+            (detail) =>
+              detail.move_learn_method.name === "level-up" &&
+              detail.version_group.name === "emerald"
+          ).level_learned_at,
+        }))
+        .sort((a, b) => a.level - b.level), // Ordina per livello
     };
   } catch (error) {
     console.error("Errore nel recupero dati Pokémon:", error);
@@ -107,7 +120,6 @@ function addPokemonToList(pokemonData) {
   listItem.pokemonData = pokemonData;
 
   const initialTitleSprite = pokemonData.back_sprite || "";
-  console.log(pokemonData.dream_world_artwork);
   const expandedContentImage =
     pokemonData.dream_world_artwork ||
     pokemonData.official_artwork ||
@@ -150,6 +162,20 @@ function addPokemonToList(pokemonData) {
     )
     .join("");
 
+  const movesHTML =
+    Array.isArray(pokemonData.levelUpMoves) && pokemonData.levelUpMoves.length
+      ? pokemonData.levelUpMoves
+          .map(
+            (move) => `
+        <div class="flex justify-between">
+          <span class="capitalize">${move.name.replace("-", " ")}</span>
+          <span>Lv. ${move.level}</span>
+        </div>
+      `
+          )
+          .join("")
+      : "<p>Nessuna mossa disponibile.</p>";
+
   listItem.innerHTML = `
 <div class="collapse-title text-xl font-medium flex items-center justify-between">
   <div class="flex items-center">
@@ -188,6 +214,12 @@ function addPokemonToList(pokemonData) {
     <h3 class="text-lg font-semibold mb-2">Statistiche Base</h3>
     <div class="flex flex-col gap-2">
       ${baseStatsHTML}
+    </div>
+  </div>
+  <div class="moves-container mt-4">
+    <h3 class="text-lg font-semibold mb-2">Mosse</h3>
+    <div class="flex flex-col gap-2">
+      ${movesHTML}
     </div>
   </div>
 </div>
@@ -288,7 +320,6 @@ pokemonListElement.addEventListener("click", function (event) {
 
 // Funzione handler per la rimozione di un Pokémon
 function handleRemovePokemon(event) {
-  console.log(event);
   const collapseElement = event.target.closest(".collapse");
   if (collapseElement && collapseElement.pokemonData) {
     const pokemonData = collapseElement.pokemonData;

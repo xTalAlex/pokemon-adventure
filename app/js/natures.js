@@ -10,7 +10,6 @@ function saveNatureCheckboxState() {
     state[checkbox.id] = checkbox.checked;
   });
   localStorage.setItem(natureStorageKey, JSON.stringify(state));
-  console.log("Stato checkbox Nature salvato.");
 }
 
 function loadNatureCheckboxState() {
@@ -25,7 +24,6 @@ function loadNatureCheckboxState() {
         checkbox.checked = state[checkbox.id];
       }
     });
-    console.log("Stato checkbox Nature caricato.");
   } else {
     console.log("Nessuno stato checkbox Nature salvato trovato.");
   }
@@ -40,7 +38,6 @@ function saveIVFormData() {
     evs: document.getElementById("pokemon-evs").value, // Aggiungi le EV
   };
   localStorage.setItem(ivFormStorageKey, JSON.stringify(formData));
-  console.log("Dati del form IV salvati.");
 }
 
 function loadIVFormData() {
@@ -52,7 +49,6 @@ function loadIVFormData() {
     document.getElementById("pokemon-nature").value = formData.nature || "";
     document.getElementById("pokemon-stats").value = formData.stats || "";
     document.getElementById("pokemon-evs").value = formData.evs || ""; // Carica le EV
-    console.log("Dati del form IV caricati.");
   } else {
     console.log("Nessun dato del form IV salvato trovato.");
   }
