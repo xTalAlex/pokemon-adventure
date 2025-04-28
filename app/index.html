@@ -18,11 +18,31 @@
       type="text/css"
     />
   </head>
-  <body
-    class="bg-gray-100 min-h-screen flex items-center justify-center p-4"
-    data-theme="caramellatte"
-  >
-    <div class="container mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <body class="bg-gray-100 min-h-screen p-4" data-theme="caramellatte">
+    <div class="w-full bg-primary text-white p-4 text-center">
+      <span id="selected-game" class="font-bold"
+        >Seleziona un gioco Pokémon</span
+      >
+      <button id="change-game-btn" class="btn btn-secondary btn-sm ml-4">
+        Cambia Gioco
+      </button>
+    </div>
+    <div id="game-modal" class="modal">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">Seleziona un gioco Pokémon</h3>
+        <div class="form-control mt-4">
+          <select id="game-selector" class="select select-bordered w-full">
+            <!-- Opzioni generate dinamicamente -->
+          </select>
+        </div>
+        <div class="modal-action">
+          <button id="save-game-btn" class="btn btn-primary">Salva</button>
+          <button id="close-modal-btn" class="btn">Chiudi</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 container mx-auto grid grid-cols-1 xl:grid-cols-3 gap-6">
       <div>
         <div class="card w-full bg-base-100 shadow-xl">
           <div class="card-body">
@@ -531,6 +551,7 @@
       </div>
     </div>
 
+    <script src="./js/gameSelector.js"></script>
     <script src="./js/hiddenPower.js"></script>
     <script src="./js/natures.js"></script>
     <script src="./js/pokemonList.js"></script>

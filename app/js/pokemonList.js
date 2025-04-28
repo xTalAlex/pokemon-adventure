@@ -58,6 +58,8 @@ async function getPokemonData(name) {
       })
     );
 
+    const selectedGame = localStorage.getItem("selectedGame") || ""; // Preleva il valore salvato o usa "emerald" come default
+
     return {
       name: data.name.charAt(0).toUpperCase() + data.name.slice(1), // Capitalizza il nome
       id: data.id,
@@ -83,7 +85,7 @@ async function getPokemonData(name) {
           move.version_group_details.some(
             (detail) =>
               detail.move_learn_method.name === "level-up" &&
-              detail.version_group.name === "emerald" // Cambia con la generazione desiderata
+              detail.version_group.name.includes(selectedGame) // Usa il valore salvato da gameSelector
           )
         )
         .map((move) => ({
@@ -91,7 +93,7 @@ async function getPokemonData(name) {
           level: move.version_group_details.find(
             (detail) =>
               detail.move_learn_method.name === "level-up" &&
-              detail.version_group.name === "emerald"
+              detail.version_group.name.includes(selectedGame)
           ).level_learned_at,
         }))
         .sort((a, b) => a.level - b.level), // Ordina per livello
