@@ -216,6 +216,30 @@ async function calculateIV(event) {
       }
     });
 
+    const ivRangesArray = ivRanges.map((range) => [range.min, range.max]);
+    const hiddenPowerPossibilitiesArray = calculateHiddenPower(ivRangesArray);
+    const uniqueCombinationsArray = new Map();
+    hiddenPowerPossibilitiesArray.forEach((result) => {
+      const key = `${result.type} - ${result.power}`;
+      if (!uniqueCombinationsArray.has(key)) {
+        uniqueCombinationsArray.set(key, []);
+      }
+      uniqueCombinationsArray.get(key).push(result.ivs);
+    });
+
+    // uniqueCombinationsArray.forEach((ivsList, key) => {
+    //   console.log(`${key}:`);
+    //   ivsList.forEach((ivs) => {
+    //     console.log(
+    //       `  { HP: ${ivs.hp}, Atk: ${ivs.atk}, Def: ${ivs.def}, SpA: ${ivs.spa}, SpD: ${ivs.spd}, Spe: ${ivs.spe} }`
+    //     );
+    //   });
+    // });
+
+    uniqueCombinationsArray.forEach((_, key) => {
+      console.log(key);
+    });
+
     resultsDiv.innerHTML = resultsHTML;
   } catch (error) {
     console.error("Errore:", error);
