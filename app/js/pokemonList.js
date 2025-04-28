@@ -71,6 +71,10 @@ async function getPokemonData(name) {
         data.sprites.other && data.sprites.other["official-artwork"]
           ? data.sprites.other["official-artwork"].front_default
           : null,
+      dream_world_artwork:
+        data.sprites.other && data.sprites.other["dream_world"]
+          ? data.sprites.other["dream_world"].front_default
+          : null,
       base_stats: data.stats.map((stat) => ({
         name: stat.stat.name,
         value: stat.base_stat,
@@ -103,8 +107,12 @@ function addPokemonToList(pokemonData) {
   listItem.pokemonData = pokemonData;
 
   const initialTitleSprite = pokemonData.back_sprite || "";
+  console.log(pokemonData.dream_world_artwork);
   const expandedContentImage =
-    pokemonData.official_artwork || pokemonData.front_sprite || null;
+    pokemonData.dream_world_artwork ||
+    pokemonData.official_artwork ||
+    pokemonData.front_sprite ||
+    null;
 
   // Genera HTML per le base stats
   const baseStatsHTML = pokemonData.base_stats
