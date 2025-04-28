@@ -30,7 +30,6 @@ function calculateHiddenPower(ivRangesArray) {
   ];
 
   const results = [];
-  // Define the order of stats corresponding to the input array order
   const statsKeys = ["hp", "atk", "def", "spa", "spd", "spe"];
 
   if (!Array.isArray(ivRangesArray) || ivRangesArray.length !== 6) {
@@ -38,6 +37,16 @@ function calculateHiddenPower(ivRangesArray) {
       "Invalid input format. Expected an array of 6 arrays for HP, Atk, Def, SpA, SpD, Spe."
     );
     return [];
+  }
+
+  // Check if all ranges have a max-min difference of 3 or less
+  for (const range of ivRangesArray) {
+    if (range[1] - range[0] > 3) {
+      console.error(
+        "Invalid IV range. Each range must have a max-min difference of 3 or less."
+      );
+      return [];
+    }
   }
 
   /**
@@ -81,11 +90,10 @@ function calculateHiddenPower(ivRangesArray) {
    */
   function generateCombinations(currentIVs, index) {
     if (index === statsKeys.length) {
-      // All IVs for all stats have been selected
       const typeIndex = getHpTypeIndex(currentIVs);
       const power = getHpPower(currentIVs);
       results.push({
-        ivs: { ...currentIVs }, // Store a copy of the IVs
+        ivs: { ...currentIVs },
         type: hpTypes[typeIndex],
         power: power,
       });
@@ -103,7 +111,6 @@ function calculateHiddenPower(ivRangesArray) {
     }
   }
 
-  // Start the recursive process with an empty IV object and the first stat index (0)
   generateCombinations({}, 0);
 
   return results;

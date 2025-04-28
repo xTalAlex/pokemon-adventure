@@ -276,11 +276,17 @@ async function calculateIV(event) {
       }
     );
 
-    // Rendi visibile la sezione Hidden Power Results
+    // Rendi visibile la sezione Hidden Power Results solo se ci sono righe
     const hiddenPowerResultsDiv = document.getElementById(
       "hidden-power-results"
     );
-    hiddenPowerResultsDiv.classList.remove("hidden");
+    const tableBody = document.getElementById("hidden-power-table-body");
+
+    if (tableBody.children.length > 0) {
+      hiddenPowerResultsDiv.classList.remove("hidden");
+    } else {
+      hiddenPowerResultsDiv.classList.add("hidden");
+    }
   } catch (error) {
     console.error("Errore:", error);
     const resultsDiv = document.getElementById("iv-results");
