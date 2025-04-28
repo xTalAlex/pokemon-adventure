@@ -37,6 +37,7 @@ function saveIVFormData() {
     level: document.getElementById("pokemon-level").value,
     nature: document.getElementById("pokemon-nature").value,
     stats: document.getElementById("pokemon-stats").value,
+    evs: document.getElementById("pokemon-evs").value, // Aggiungi le EV
   };
   localStorage.setItem(ivFormStorageKey, JSON.stringify(formData));
   console.log("Dati del form IV salvati.");
@@ -50,6 +51,7 @@ function loadIVFormData() {
     document.getElementById("pokemon-level").value = formData.level || "";
     document.getElementById("pokemon-nature").value = formData.nature || "";
     document.getElementById("pokemon-stats").value = formData.stats || "";
+    document.getElementById("pokemon-evs").value = formData.evs || ""; // Carica le EV
     console.log("Dati del form IV caricati.");
   } else {
     console.log("Nessun dato del form IV salvato trovato.");
@@ -57,12 +59,12 @@ function loadIVFormData() {
 }
 
 // --- Funzione per calcolare una singola statistica (usata per verificare gli IV) ---
-// Assume 0 EV per il calcolo del range IV
-function calculateSingleStat(base, level, iv, natureMultiplier, isHp) {
-  const ev = 0; // Assumiamo 0 EV per il calcolo del range IV
-  const ivEvTerm = Math.floor(0.25 * ev);
-  const baseIvEvTerm = 2 * base + iv + ivEvTerm;
-  const levelTerm = Math.floor((baseIvEvTerm * level) / 100);
+// Modifica la funzione per calcolare una singola statistica includendo le EVs
+function calculateSingleStat(base, level, iv, ev, natureMultiplier, isHp) {
+  // Calcola il termine base + IV + EV
+  const ivEvTerm = Math.floor(0.25 * ev); // Floor(0.25 * EV)
+  const baseIvEvTerm = 2 * base + iv + ivEvTerm; // 2 * Base + IV + Floor(0.25 * EV)
+  const levelTerm = Math.floor((baseIvEvTerm * level) / 100); // Floor(0.01 * (2 * Base + IV + Floor(0.25 * EV)) * Level)
 
   if (isHp) {
     // Formula HP: Floor(0.01 * (2 * Base + IV + Floor(0.25 * EV)) * Level) + Level + 10
@@ -84,9 +86,15 @@ async function calculateIV(event) {
     .value.split(",")
     .map((stat) => parseInt(stat.trim(), 10));
 
-  if (stats.length !== 6) {
+  // Controlla se l'input delle EV è vuoto e assegna un array di zeri se necessario
+  const evInput = document.getElementById("pokemon-evs").value.trim();
+  const evs = evInput
+    ? evInput.split(",").map((ev) => parseInt(ev.trim(), 10))
+    : [0, 0, 0, 0, 0, 0];
+
+  if (stats.length !== 6 || evs.length !== 6) {
     alert(
-      "Inserisci tutte e sei le statistiche (HP, Att, Dif, SpA, SpD, Vel) separate da virgole."
+      "Inserisci tutte e sei le statistiche (HP, Att, Dif, SpA, SpD, Vel) e le EVs separate da virgole."
     );
     return;
   }
@@ -94,8 +102,8 @@ async function calculateIV(event) {
     alert("Inserisci un livello valido (1-100).");
     return;
   }
-  if (stats.some(isNaN)) {
-    alert("Assicurati che tutte le statistiche siano numeri validi.");
+  if (stats.some(isNaN) || evs.some(isNaN)) {
+    alert("Assicurati che tutte le statistiche e le EVs siano numeri validi.");
     return;
   }
 
@@ -122,6 +130,7 @@ async function calculateIV(event) {
     for (let i = 0; i < 6; i++) {
       const baseStat = baseStats[i];
       const actualStat = stats[i]; // La statistica inserita dall'utente
+      const ev = evs[i]; // Le EVs inserite dall'utente
       const isHp = i === 0;
       const natureMultiplier = isHp
         ? 1
@@ -140,6 +149,7 @@ async function calculateIV(event) {
           baseStat,
           level,
           iv,
+          ev,
           natureMultiplier,
           isHp
         );
@@ -157,18 +167,8 @@ async function calculateIV(event) {
 
       // Dopo aver controllato tutti gli IV da 0 a 31
       if (minIV > 31 || maxIV < 0) {
-        // Nessun IV tra 0 e 31 con EV=0 ha prodotto la statistica inserita.
-        // Questo potrebbe significare che l'utente ha inserito una statistica errata,
-        // o che il Pokémon ha EV, o che il livello è sbagliato.
-        ivRanges.push({
-          statName: statNames[i],
-          min: -1,
-          max: -1,
-          actual: actualStat,
-          base: baseStat,
-        }); // Segnaliamo l'impossibilità
+        ivRanges.push({ statName: statNames[i], min: -1, max: -1 });
       } else {
-        // Trovato almeno un IV che produce la statistica, il range è da minIV a maxIV.
         ivRanges.push({ statName: statNames[i], min: minIV, max: maxIV });
       }
     }
@@ -176,37 +176,41 @@ async function calculateIV(event) {
     // Mostra i risultati
     const resultsDiv = document.getElementById("iv-results");
     let resultsHTML = "<h3>Risultati IV</h3>";
-    ivRanges.forEach((range) => {
+    ivRanges.forEach((range, index) => {
       if (range.min === -1) {
-        resultsHTML += `<p>${range.statName} IV: Impossibile ottenere stat ${
-          range.actual
-        } (Base ${
-          range.base
-        }) con EV=0 a Livello ${level}. Range possibile con EV=0: ${calculateSingleStat(
-          range.base,
+        const base = pokemonData.stats[index]?.base_stat || "undefined";
+        const actual = stats[index] || "undefined";
+        const ev = evs[index] || 0;
+
+        resultsHTML += `<p class="text-error">${
+          range.statName
+        } IV: Impossibile ottenere stat ${actual} (Base ${base}) con EV=${ev} a Livello ${level}. Range possibile con EV=${ev}: ${calculateSingleStat(
+          base,
           level,
           0,
+          ev,
           range.statName === "HP"
             ? 1
             : natureData.increased_stat?.name ===
-              pokemonData.stats[ivRanges.indexOf(range)].stat.name
+              pokemonData.stats[index]?.stat.name
             ? 1.1
             : natureData.decreased_stat?.name ===
-              pokemonData.stats[ivRanges.indexOf(range)].stat.name
+              pokemonData.stats[index]?.stat.name
             ? 0.9
             : 1,
           range.statName === "HP"
         )} - ${calculateSingleStat(
-          range.base,
+          base,
           level,
           31,
+          ev,
           range.statName === "HP"
             ? 1
             : natureData.increased_stat?.name ===
-              pokemonData.stats[ivRanges.indexOf(range)].stat.name
+              pokemonData.stats[index]?.stat.name
             ? 1.1
             : natureData.decreased_stat?.name ===
-              pokemonData.stats[ivRanges.indexOf(range)].stat.name
+              pokemonData.stats[index]?.stat.name
             ? 0.9
             : 1,
           range.statName === "HP"
@@ -215,6 +219,8 @@ async function calculateIV(event) {
         resultsHTML += `<p>${range.statName} IV: ${range.min} - ${range.max}</p>`;
       }
     });
+
+    resultsDiv.innerHTML = resultsHTML;
 
     const ivRangesArray = ivRanges.map((range) => [range.min, range.max]);
     const hiddenPowerPossibilitiesArray = calculateHiddenPower(ivRangesArray);
@@ -239,15 +245,11 @@ async function calculateIV(event) {
     uniqueCombinationsArray.forEach((_, key) => {
       console.log(key);
     });
-
-    resultsDiv.innerHTML = resultsHTML;
   } catch (error) {
     console.error("Errore:", error);
     const resultsDiv = document.getElementById("iv-results");
     resultsDiv.innerHTML = `<p style="color: red;">Si è verificato un errore: ${error.message}. Assicurati che il nome del Pokémon e la natura siano corretti.</p>`;
-    //alert(`Si è verificato un errore durante il calcolo degli IV: ${error.message}.`);
   } finally {
-    // Salva i dati del form dopo il tentativo di calcolo
     saveIVFormData();
   }
 }
